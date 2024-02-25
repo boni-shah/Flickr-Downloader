@@ -45,7 +45,7 @@ namespace AdornedControl
 
         public AdornedControl()
         {
-            this.DataContextChanged += new DependencyPropertyChangedEventHandler(AdornedControl_DataContextChanged);
+            DataContextChanged += new DependencyPropertyChangedEventHandler(AdornedControl_DataContextChanged);
         }
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace AdornedControl
         /// </summary>
         private void UpdateAdornerDataContext()
         {
-            if (this.AdornerContent != null)
+            if (AdornerContent != null)
             {
-                this.AdornerContent.DataContext = this.DataContext;
+                AdornerContent.DataContext = DataContext;
             }
         }
 
@@ -261,24 +261,24 @@ namespace AdornedControl
         /// </summary>
         private void ShowAdornerInternal()
         {
-            if (this.adorner != null)
+            if (adorner != null)
             {
                 // Already adorned.
                 return;
             }
 
-            if (this.AdornerContent != null)
+            if (AdornerContent != null)
             {
-                if (this.adornerLayer == null)
+                if (adornerLayer == null)
                 {
-                    this.adornerLayer = AdornerLayer.GetAdornerLayer(this);
+                    adornerLayer = AdornerLayer.GetAdornerLayer(this);
                 }
 
-                if (this.adornerLayer != null)
+                if (adornerLayer != null)
                 {
-                    this.adorner = new FrameworkElementAdorner(this.AdornerContent, this, this.HorizontalAdornerPlacement, this.VerticalAdornerPlacement,
-                                                     this.AdornerOffsetX, this.AdornerOffsetY);
-                    this.adornerLayer.Add(this.adorner);
+                    adorner = new FrameworkElementAdorner(AdornerContent, this, HorizontalAdornerPlacement, VerticalAdornerPlacement,
+                                                     AdornerOffsetX, AdornerOffsetY);
+                    adornerLayer.Add(adorner);
 
                     UpdateAdornerDataContext();
                 }
@@ -290,17 +290,17 @@ namespace AdornedControl
         /// </summary>
         private void HideAdornerInternal()
         {
-            if (this.adornerLayer == null || this.adorner == null)
+            if (adornerLayer == null || adorner == null)
             {
                 // Not already adorned.
                 return;
             }
 
-            this.adornerLayer.Remove(this.adorner);
-            this.adorner.DisconnectChild();
+            adornerLayer.Remove(adorner);
+            adorner.DisconnectChild();
 
-            this.adorner = null;
-            this.adornerLayer = null;
+            adorner = null;
+            adornerLayer = null;
         }
 
         public override void OnApplyTemplate()

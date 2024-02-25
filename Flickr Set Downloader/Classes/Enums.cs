@@ -28,23 +28,23 @@ namespace Flickr_Set_Downloader
 
     public enum PhotoSizeEnum
     {
-        [Description("Square (Square 75)")]
+        [Description("Square 75")]
         sq = 0,
-        [Description("Large Square (Square 150)")]
+        [Description("Square 150")]
         q = 1,
         [Description("Thumbnail")]
         t = 2,
-        [Description("Small (Small 240)")]
+        [Description("Small 240")]
         s = 3,
         [Description("Small 320")]
         n = 4,
-        [Description("Medium (Medium 500)")]
+        [Description("Medium 500")]
         m = 5,
         [Description("Medium 640")]
         z = 6,
         [Description("Medium 800")]
         c = 7,
-        [Description("Large (Large 1024)")]
+        [Description("Large 1024")]
         l = 8,
         [Description("Original")]
         o = 9,

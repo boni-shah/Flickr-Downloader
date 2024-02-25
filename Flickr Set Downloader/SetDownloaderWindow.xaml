@@ -6,7 +6,7 @@
         xmlns:PhotoLoader="clr-namespace:PhotoLoader;assembly=PhotoLoader"
         xmlns:ac="clr-namespace:AdornedControl;assembly=AdornedControl"
         xmlns:t="clr-namespace:Flickr_Set_Downloader"
-        Title="Flickr Downloadr" Height="Auto" Width="540" ResizeMode="NoResize" Name="SetDownloader">
+        Title="Flickr Downloadr - BETA" Height="Auto" Width="540" ResizeMode="CanMinimize" Closing="App_Closing" Name="SetDownloader" Icon="Flickr Downloadr.ico">
     <Window.Resources>
         <t:BoolToVisibleOrHidden x:Key="BoolToVisConverter" Collapse="True" />
         <Style TargetType="{x:Type ListView}" x:Key="FlickrSetListrListviewStyle" >
@@ -177,14 +177,15 @@
                         </RadialGradientBrush>
                     </Border.Background>
                     <StackPanel Orientation="Vertical" Height="Auto" Width="Auto" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <Grid>
+                        <Grid MouseLeftButtonDown="AddSingleImagetoDownloadListandStartDownload">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Image Height="150" Width="150" Grid.Column="1" Grid.Row="1" Panel.ZIndex="0" ToolTip="Click on this Image to select it for Download or to remove it, if already selected"
+                            <Image Height="150" Width="150" Grid.Column="1" Grid.Row="1" Panel.ZIndex="0" 
+                                   ToolTip="Click on this Image to select it for download or to remove it, if already selected"
                                    PhotoLoader:Loader.DisplayOption="Preview"
                                    PhotoLoader:Loader.Source="{Binding src}"
                                    PhotoLoader:Loader.DisplayWaitingAnimationDuringLoading="{Binding Path=DisplayAnimationDuringLoading}"
@@ -240,12 +241,15 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Margin="5" Background="Silver" Orientation="Horizontal" VerticalAlignment="Top" ToolTip="This can be the Sets Menu or a Specific Set or the Username">
             <Label Margin="5">Flickr URL/UserName :</Label>
-            <TextBox Width="300" Margin="5" Name="URLtxt" KeyDown="CatchEnterKey"></TextBox>
+            <TextBox Width="270" Margin="5" Name="URLtxt" KeyDown="CatchEnterKey"></TextBox>
             <Button FontFamily="Marlett" FontSize="20" Content="4" Click="LoadDataButton_Click" Name="GetFlickrSetsbtn" Margin="0 5 5 5" 
                     Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"/>
-            <Button Height="32" Background="{x:Null}" Margin="0,0,2,0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" ToolTip="Settings" Focusable="False">
+            <Button Height="32" Background="{x:Null}" Margin="0,0,2,0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" ToolTip="Settings" Focusable="False"
+                    Click="Settingsbtn_Click">
                 <Image Source="Icons\Settings.ico"></Image>
             </Button>
+            <Button x:Name="ButtonInfo" DockPanel.Dock="Right" Content="i" FontSize="18" FontWeight="SemiBold" Height="30" Width="25" Click="Infobtn_Click" Focusable="False"
+                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" ToolTip="Click this Button to know me better." Margin="2 0 0 0"  Background="{x:Null}" />
             <Label Name="FlickrSetListrGridLblMsgLbl" Visibility="Collapsed">No Data Available</Label>
             <Label Name="FlickrSetViewrGridLblMsgLbl" Visibility="Collapsed">No Data Available</Label>
         </StackPanel>
@@ -258,20 +262,21 @@
                             <Style.Resources>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey }" Color="Transparent" />
                             </Style.Resources>
                         </Style>
                     </ListView.Resources>
                 </ListView>
             </l:AccordionItem>
-            <l:AccordionItem Header="Flickr Set Viewr" x:Name="FlickrSetViewr"  MaxHeight="495">
+            <l:AccordionItem Header="Flickr Set Viewr" x:Name="FlickrSetViewr"  MaxHeight="495" Tag="id, name">
                 <ListView x:Name="FlickrSetViewrGrid" ItemTemplate="{StaticResource FlickrSetViewrItemTemplate}" ItemsSource="{Binding PhtList, UpdateSourceTrigger=PropertyChanged}" 
                       Background="Black" SelectionMode="Multiple" Style="{StaticResource FlickrSetViewrListviewStyle}">
-                    
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Style.Resources>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                                 <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey }" Color="Transparent" />
                             </Style.Resources>
                             <Setter Property="IsSelected" Value="{Binding IsSelected}"></Setter>
                         </Style>
@@ -286,8 +291,8 @@
                         <ac:AdornedControl.AdornerContent>
                             <t:LoadingWait></t:LoadingWait>
                         </ac:AdornedControl.AdornerContent>
-                        <ListBox Name="ListBox1" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="450">
-                            <ListBox.ItemTemplate>
+                        <ListView Name="ImageDownloadList" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="465" MaxHeight="465">
+                            <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderThickness="1" Margin="2,4,2,4" Padding="0 0 0 4">
                                         <Border BorderThickness="0"  CornerRadius="2" Margin="0" >
@@ -306,18 +311,21 @@
                                                 </RadialGradientBrush>
                                             </Border.Background>
                                             <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
-                                                <TextBlock FontWeight="Bold" TextWrapping="Wrap" Width="300" VerticalAlignment="Center">
-                                                    <Hyperlink NavigateUri="{Binding FilePath}" RequestNavigate="HandleRequestNavigate" TextDecorations="none">
-                                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
-                                                    </Hyperlink>
-                                                </TextBlock>
-                                                <Grid Width="120" Margin="2 0 0 0" Height="20">
-                                                    <ProgressBar IsIndeterminate="True" Foreground="{Binding ProgressbarColor}"/>
-                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Status}"/>
+                                                <StackPanel>
+                                                    <TextBlock FontWeight="Bold" TextWrapping="Wrap" Width="280" VerticalAlignment="Center">
+                                                        <Hyperlink NavigateUri="{Binding FilePath}" RequestNavigate="HandleRequestNavigate" TextDecorations="none">
+                                                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" />
+                                                        </Hyperlink>
+                                                    </TextBlock>
+                                                    <TextBlock Text="{Binding Path=SetName, StringFormat='from set: {0}'}" TextWrapping="Wrap" />
+                                                </StackPanel>
+                                                <Grid Width="180" Margin="2 0 0 0" Height="20">
+                                                    <ProgressBar IsIndeterminate="{Binding Path=IsIndeterminate}"  Visibility="{Binding IsProgressBarVisible}" Width="160" Foreground="{Binding Path=ProgressbarColor}" Value="{Binding Path=ProgressPercentage}"/>
+                                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding StatusDescription}" Visibility="{Binding IsTextBoxVisible}" FontWeight="Bold"/>
                                                 </Grid>
                                                 <TextBlock FontWeight="Bold" Margin="0 0 10 0" DockPanel.Dock="Right" VerticalAlignment="Center">
-                                                    <Hyperlink RequestNavigate="HandleRequestNavigate" TextDecorations="none">
-                                                        <TextBlock Text="X" FontSize="15" FontWeight="Bold" TextWrapping="Wrap" Foreground="Silver" />
+                                                    <Hyperlink TextDecorations="none">
+                                                        <TextBlock Text="X" FontSize="15" FontWeight="Bold" TextWrapping="Wrap" Foreground="Silver" MouseDown="RemovefromDownloadList" />
                                                     </Hyperlink>
                                                 </TextBlock>
                                                 <Button FontFamily="Marlett" FontSize="{Binding StartStopButtonTextSize}" Content="{Binding StartStopButtonText}" 
@@ -328,8 +336,8 @@
                                         </Border>
                                     </Border>
                                 </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </ac:AdornedControl>
                 </StackPanel>
             </l:AccordionItem>
