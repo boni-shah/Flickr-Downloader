@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Flickr_Set_Downloader
@@ -11,24 +12,59 @@ namespace Flickr_Set_Downloader
         public string SetLink { get; set; }
         public string SetTitle { get; set; }
         public string SetCount { get; set; }
+        public string SetId { get; set; }
         public bool IsSelected { get; set; }
     }
 
-    public class FlickrSetItem
+    public class FlickrSetItem : INotifyPropertyChanged
     {
-        public int id { get; set; }
+        public string Id { get; set; }
         public string FilePath { get; set; }
         public string SetId { get; set; }
         public string SetName { get; set; }
         public string Title { get; set; }
-        public DownloadStatus _status;
-        public string Status { get { return _status.GetDescription(); } }
+        public string PhotoSizeDescription { get; set; }
+
+        private DownloadStatus _status;
+        public DownloadStatus Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                NotifyPropertyChanged("Status");
+                NotifyPropertyChanged("IsTextBoxVisible");
+                NotifyPropertyChanged("IsProgressBarVisible");
+                NotifyPropertyChanged("StatusDescription");
+            }
+        }
+
+        public string StatusDescription
+        {
+            get { return _status.GetDescription(); }
+        }
+
+        public Visibility IsTextBoxVisible
+        {
+            get
+            {
+                return Status != DownloadStatus.Downloading? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
+        public Visibility IsProgressBarVisible
+        {
+            get
+            {
+                return Status == DownloadStatus.Downloading ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
         public bool IsStartStopButtonVisible
         {
             get
             {
-                if (_status == DownloadStatus.DownloadCancelled || _status == DownloadStatus.DownloadFailed || _status == DownloadStatus.Downloading) return true;
-                return false;
+                return false; //Status == DownloadStatus.DownloadCancelled || Status == DownloadStatus.DownloadFailed || Status == DownloadStatus.Downloading;
             }
         }
 
@@ -36,9 +72,9 @@ namespace Flickr_Set_Downloader
         {
             get
             {
-                if (_status == DownloadStatus.DownloadCancelled || _status == DownloadStatus.DownloadFailed) return "4";
-                else if (_status == DownloadStatus.Downloading) return "g";
-                return string.Empty;
+                return "";
+                if (Status == DownloadStatus.DownloadCancelled || Status == DownloadStatus.DownloadFailed) return "4";
+                return Status == DownloadStatus.Downloading ? "g" : string.Empty;
             }
         }
 
@@ -46,9 +82,9 @@ namespace Flickr_Set_Downloader
         {
             get
             {
-                if (_status == DownloadStatus.DownloadCancelled || _status == DownloadStatus.DownloadFailed) return 30;
-                else if (_status == DownloadStatus.Downloading) return 20;
                 return 0;
+                if (Status == DownloadStatus.DownloadCancelled || Status == DownloadStatus.DownloadFailed) return 30;
+                return Status == DownloadStatus.Downloading ? 20 : 0;
             }
         }
 
@@ -56,15 +92,56 @@ namespace Flickr_Set_Downloader
         {
             get
             {
-                if (_status == DownloadStatus.DownloadCancelled) return Brushes.Red;
-                else if (_status == DownloadStatus.DownloadCompleted) return Brushes.Green;
-                else if (_status == DownloadStatus.Downloading) return Brushes.Green;
-                else if (_status == DownloadStatus.DownloadFailed) return Brushes.Red;
-                else if (_status == DownloadStatus.DownloadNotStarted) return Brushes.Green;
+                return Brushes.Green;
+                switch (Status)
+                {
+                    case DownloadStatus.DownloadCancelled:
+                    case DownloadStatus.DownloadFailed:
+                        return Brushes.Red;
+                    case DownloadStatus.DownloadCompleted:
+                    case DownloadStatus.Downloading:
+                    case DownloadStatus.DownloadNotStarted:
+                        return Brushes.Green;
+                }
                 return Brushes.Red;
             }
         }
 
+        private int _ProgressPercentage;
+        public int ProgressPercentage
+        {
+            get { return _ProgressPercentage; }
+            set
+            {
+                _ProgressPercentage = value;
+                NotifyPropertyChanged("ProgressPercentage");
+            }
+        }
+
+        private bool _IsIndeterminate;
+        public bool IsIndeterminate {
+            get { return _IsIndeterminate; }
+            set
+            {
+                _IsIndeterminate = value;
+                NotifyPropertyChanged("IsIndeterminate"); 
+            }
+        }
+
+        public FlickrSetItem() { 
+            Status = DownloadStatus.DownloadNotStarted;
+            ProgressPercentage = 0;
+            IsIndeterminate = true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(String propertyName)
+        {
+            var handler = PropertyChanged;
+            if (null != handler)
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            
+        }
     }
 
     public static class EnumExtension

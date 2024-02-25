@@ -1,0 +1,49 @@
+﻿<Window x:Class="Flickr_Set_Downloader.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" Height="280" Width="551" ShowInTaskbar="True" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"></RowDefinition>
+            <RowDefinition Height="70"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="65"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Label Content="Select the Download Folder :" HorizontalAlignment="Left" Margin="12,12,0,0" Name="DownloadFolderpathlbl" VerticalAlignment="Top" Foreground="Black" />
+            <TextBox HorizontalAlignment="Left" Margin="12,40,0,0" Name="DownloadFolderpath" VerticalAlignment="Top" Width="406" IsReadOnly="True"/>
+            <Button Content="Browse" Height="25" HorizontalAlignment="Right" Margin="0,38,12,0" Name="DownloadFolderbtn" VerticalAlignment="Top" Width="90" Click="DownloadFolderbtn_Click" />
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Select Image Size : " Height="28" HorizontalAlignment="Left" Margin="12,10,0,0" Name="Subtitle_lbl" VerticalAlignment="Top" />
+                <ComboBox Grid.Row="0" Height="23" HorizontalAlignment="Left" Margin="133,10,0,0" Name="Size_combo" VerticalAlignment="Top" Width="178" SelectedValuePath="Tag" >
+                    <ComboBoxItem Tag="sq" Content="Square (Square 75)" />
+                    <ComboBoxItem Tag="q" Content="Large Square (Square 150)" />
+                    <ComboBoxItem Tag="t" Content="Thumbnail" />
+                    <ComboBoxItem Tag="s" Content="Small (Small 240)" />
+                    <ComboBoxItem Tag="n" Content="Small 320" />
+                    <ComboBoxItem Tag="m" Content="Medium (Medium 500)" />
+                    <ComboBoxItem Tag="z" Content="Medium 640" />
+                    <ComboBoxItem Tag="c" Content="Medium 800" />
+                    <ComboBoxItem Tag="l" Content="Large (Large 1024)" IsSelected="True"/>
+                    <ComboBoxItem Tag="o" Content="Original" />
+                    <ComboBoxItem Tag="h" Content="Large 1600" />
+                    <ComboBoxItem Tag="k" Content="Large 2048" />
+                </ComboBox>
+                <Label Content="Note : If this size is not available, the image will not be downloaded and will be shown as download failed." HorizontalAlignment="Left" FontSize="10" Margin="12,43,0,0" Name="NoteLbl" VerticalAlignment="Top" Height="28" Grid.RowSpan="2" />
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Label Content="Total Application runs : " Height="28" HorizontalAlignment="Left" Margin="12,2,0,0" Name="Totalrun_lbl" VerticalAlignment="Top" />
+            <Label Content="" Height="28" HorizontalAlignment="left" Margin="153,2,0,0" Name="Totalrun_value_lbl" VerticalAlignment="Top" />
+        </Grid>
+        <Grid Grid.Row="3">
+            <Button Content="Save Settings" Height="39" HorizontalAlignment="Left" Margin="384,10,0,0" Name="SaveSettingsbt1n" VerticalAlignment="Top" Width="130" Click="SaveSettingsbtn_Click" />
+        </Grid>
+    </Grid>
+</Window>

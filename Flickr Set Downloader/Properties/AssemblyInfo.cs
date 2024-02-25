@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Flickr Set Downloader")]
-[assembly: AssemblyDescription("A Free and Protable tool to download the Images from flickr.com")]
+[assembly: AssemblyTitle("Flickr Downloadr - BETA")]
+[assembly: AssemblyDescription("A free and portable tool to download the Images from flickr.com")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("OUtilities")]
-[assembly: AssemblyProduct("Flickr Set Downloader")]
+[assembly: AssemblyProduct("Flickr Downloadr - BETA")]
 [assembly: AssemblyCopyright("Copyright ©  Obin Shah 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.3.2.1")]
-[assembly: AssemblyFileVersion("1.3.2.1")]
+[assembly: AssemblyVersion("1.3.25.8")]
+[assembly: AssemblyFileVersion("1.3.25.8")]

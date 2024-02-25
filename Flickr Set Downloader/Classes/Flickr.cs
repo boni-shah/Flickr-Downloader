@@ -3,10 +3,6 @@ using System.ComponentModel;
 
 namespace Flickr_Set_Downloader
 {
-    public class Flickr
-    {
-    }
-
     public class Photolist : INotifyPropertyChanged
     {
         public string name { get; set; }
@@ -66,7 +62,7 @@ namespace Flickr_Set_Downloader
             name = (string)rowobj["name"];
             id = (string)rowobj["id"];
             src = (string)rowobj["src"];
-            photo_url = @"https://www.flickr.com/photos" + (string)rowobj["photo_url"];
+            photo_url = @"https://www.flickr.com" + (string)rowobj["photo_url"];
             full_name = (string)rowobj["full_name"];
             is_video = (string)rowobj["is_video"];
 
@@ -83,6 +79,8 @@ namespace Flickr_Set_Downloader
             h = new URLlist(rowobj["sizes"]["h"],name,id);
             k = new URLlist(rowobj["sizes"]["k"],name,id);
         }
+
+        public void MarkObjectSelected() { _IsSelected = true; }
     }
 
     public class URLlist
